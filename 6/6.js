@@ -20,3 +20,4 @@ while (!states.includes(JSON.stringify(input))) {
 }
 
 console.log(cycles);
+console.log(cycles - states.indexOf(JSON.stringify(input)))
