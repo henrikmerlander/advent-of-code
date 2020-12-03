@@ -4,8 +4,8 @@ const input = require('fs')
   .split('\n')
 
 const validPasswords = input
-  .map((i) => i.split(' '))
-  .filter((x) => {
+  .map(i => i.split(' '))
+  .filter(x => {
     const first = x[0].split('-')[0]
     const second = x[0].split('-')[1]
     const character = x[1][0]

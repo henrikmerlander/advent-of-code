@@ -4,8 +4,8 @@ const input = require('fs')
   .split('\n')
 
 const trees = input
-  .map((row) => row.split(''))
+  .map(row => row.split(''))
   .map((row, index) => row[(3 * index) % row.length])
-  .filter((candidate) => candidate === '#')
+  .filter(candidate => candidate === '#')
 
 console.log(trees.length)

@@ -1,7 +1,7 @@
 const input = require('fs')
   .readFileSync('input.txt', 'utf-8')
   .split('\n')
-  .map(x => parseInt(x));
+  .map(x => parseInt(x))
 
 const result = input
   .filter(x => input
