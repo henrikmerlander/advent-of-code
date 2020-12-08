@@ -45,7 +45,7 @@ for (const [index, instruction] of program.entries()) {
   const [operation] = /(nop|jmp)/.exec(instruction) || []
   if (!operation) continue
 
-  const newProgram = Array.from(input)
+  const newProgram = Array.from(program)
 
   newProgram[index] = instruction.replace(operation, operation === 'nop' ? 'jmp' : 'nop')
 
