@@ -5,23 +5,23 @@ const input = require('fs')
 
 const run = instructions => {
   let i = 0
-  let acc = 0
+  let accumulator = 0
   let visited = new Set()
 
   while (!visited.has(i)) {
     visited.add(i)
 
     const isTerminated = i === instructions.length
-    if (isTerminated) return { reason: 'Terminated', acc }
+    if (isTerminated) return { reason: 'Terminated', accumulator }
 
-    const { groups: { instruction, argument } } = /(?<instruction>\w\w\w) (?<argument>(\+|-)\d+)/.exec(instructions[i])
+    const { groups: { operation, argument } } = /(?<operation>\w\w\w) (?<argument>(\+|-)\d+)/.exec(instructions[i])
 
-    switch (instruction) {
+    switch (operation) {
       case 'nop':
         i++
         break
       case 'acc':
-        acc += +argument
+        accumulator += +argument
         i++
         break
       case 'jmp':
@@ -30,11 +30,11 @@ const run = instructions => {
     }
   }
 
-  return { reason: 'Double instruction', acc }
+  return { reason: 'Infinite loop', accumulator }
 }
 
 const result = run(input)
-console.log('Part 1', result.acc)
+console.log('Part 1', result.accumulator)
 
 for (let i = 0; i < input.length; i++) {
   if (!input[i].includes('jmp') && !input[i].includes('nop'))
@@ -48,7 +48,7 @@ for (let i = 0; i < input.length; i++) {
 
   const result = run(instructions)
   if (result.reason === 'Terminated') {
-    console.log('Part 2', result.acc)
+    console.log('Part 2', result.accumulator)
     break
   }
 }
