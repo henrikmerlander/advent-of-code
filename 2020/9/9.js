@@ -2,7 +2,8 @@ const input = require('fs')
   .readFileSync('input.txt', 'utf-8')
   .trim()
   .split('\n')
-  .map(Number)
+
+const xmasData = input.map(Number)
 
 const isValid = (number, previousNumbers) =>
   previousNumbers.some(x =>
@@ -12,38 +13,33 @@ const isValid = (number, previousNumbers) =>
 
 const preambleLength = 25
 
-const firstInvalid = input
+const firstInvalidNumber = xmasData
   .find((number, index) =>
     index >= preambleLength
-    && !isValid(number, input.slice(index - preambleLength, index)))
+    && !isValid(number, xmasData.slice(index - preambleLength, index)))
 
-console.log('Part 1', firstInvalid)
+console.log('Part 1', firstInvalidNumber)
 
-const target = firstInvalid
-let contiguous = []
+const encryptionWeakness = target => {
+  for (let i = 0; i < xmasData.length; i++) {
+    for (let j = i + 2; j < xmasData.length; j++) {
+      const contiguousCandidate = xmasData.slice(i, j)
 
-for (let i = 0; i < input.length; i++) {
-  for (let j = i; j < input.length; j++) {
-    if (input[j] !== target)
-      contiguous.push(input[j])
+      const sum = contiguousCandidate.reduce((acc, curr) => acc + curr, 0)
+      const isContiguous = sum === target
 
-    const sum = contiguous.reduce((acc, curr) => acc + curr, 0)
+      if (isContiguous) {
+        const smallest = Math.min(...contiguousCandidate)
+        const largest = Math.max(...contiguousCandidate)
+        const encryptionWeakness = smallest + largest
 
-    if (sum === target) {
-      break
+        return encryptionWeakness
+      }
+      else if (sum > target) {
+        break
+      }
     }
-    else if (sum > target) {
-      contiguous = []
-      break
-    }
-  }
-
-  if (contiguous.length) {
-    const smallest = Math.min(...contiguous)
-    const largest = Math.max(...contiguous)
-    const encryptionWeakness = smallest + largest
-
-    console.log('Part 2', encryptionWeakness)
-    break
   }
 }
+
+console.log('Part 2', encryptionWeakness(firstInvalidNumber))
