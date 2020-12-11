@@ -21,13 +21,13 @@ const applyRules = (seatmap, strategy, occupiedThreshold) => seatmap
 
 const isEquilibrium = (a, b) => JSON.stringify(a) === JSON.stringify(b)
 
-const stabilize = (seatmap, occupiedStrategy, occupiedThreshold) => {
+const stabilize = (seatmap, strategy, occupiedThreshold) => {
   let before = seatmap
-  let after = applyRules(before, occupiedStrategy, occupiedThreshold)
+  let after = applyRules(before, strategy, occupiedThreshold)
 
   while (!isEquilibrium(before, after)) {
     before = after
-    after = applyRules(before, occupiedStrategy, occupiedThreshold)
+    after = applyRules(before, strategy, occupiedThreshold)
   }
 
   return after
@@ -50,13 +50,10 @@ const within = reach => (grid, x, y) => [
 ].map(([dx, dy]) => findSeat(grid, x, y, dx, dy, reach))
 
 const findSeat = (grid, x, y, dx, dy, reach) => {
-  let found, i = 1
-  do {
-    found = grid[y + dy * i]?.[x + dx * i]
-    i++
-  } while (i <= reach && found === floor)
-
-  return found
+  for (let i = 1; i <= reach; i++) {
+    const found = grid[y + dy * i]?.[x + dx * i]
+    if (found !== floor) return found
+  }
 }
 
 console.log('Part 1', occupiedSeats(stabilize(input, within(1), 4)))
