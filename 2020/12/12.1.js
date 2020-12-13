@@ -6,10 +6,10 @@ const input = require('fs')
 // % operator gives negative result for negative numbers
 const mod = (n, m) => ((n % m) + m) % m
 
-const turn = (from, direction, value) => {
+const turn = (from, direction, degrees) => {
   const directions = ['N', 'E', 'S', 'W']
   const current = directions.indexOf(from)
-  const steps = value / 90
+  const steps = degrees / 90
   const next = current + (direction === 'R' ? steps : -steps)
   const nextIndex = mod(next, directions.length)
 
