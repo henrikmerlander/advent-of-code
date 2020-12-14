@@ -6,24 +6,15 @@ const input = require('fs')
 // % operator gives negative result for negative numbers
 const mod = (n, m) => ((n % m) + m) % m
 
-const turn = (from, direction, degrees) => {
-  const directions = ['N', 'E', 'S', 'W']
-  const current = directions.indexOf(from)
-  const steps = degrees / 90
-  const next = current + (direction === 'R' ? steps : -steps)
-  const nextIndex = mod(next, directions.length)
+const nx = 0, ex = 1, sx = 0, wx = -1
+const ny = 1, ey = 0, sy = -1, wy = 0
+const x = [nx, ex, sx, wx]
+const y = [ny, ey, sy, wy]
+const east = 1
 
-  return directions[nextIndex]
-}
+const origo = { x: 0, y: 0 }
 
-const forward = (location, direction, value) => {
-  const axis = ['E', 'W'].includes(direction) ? 'x' : 'y'
-  const units = ['N', 'E'].includes(direction) ? value : -value
-
-  return { ...location, [axis]: location[axis] + units }
-}
-
-const travel = instructions =>
+const travel = (instructions, location, direction) =>
   instructions
     .map(instruction => {
       const [, action, value] = /(\w)(\d+)/.exec(instruction)
@@ -45,21 +36,23 @@ const travel = instructions =>
           location.x -= value
           break
         case 'L':
-          direction = turn(direction, 'L', value)
-          break
         case 'R':
-          direction = turn(direction, 'R', value)
+          direction = mod(direction + (action === 'R' ? value : -value) / 90, 4)
           break
         case 'F':
-          location = forward(location, direction, value)
+          location.x += x[direction] * value
+          location.y += y[direction] * value
           break
       }
 
       return { location, direction }
-    }, { location: { x: 0, y: 0 }, direction: 'E' })
+    }, { location, direction })
 
 const instructions = input
-const destination = travel(instructions)
+const startingLocation = origo
+const startingDirection = east
+const destination = travel(instructions, startingLocation, startingDirection)
+
 const manhattanDistance = Math.abs(destination.location.x) + Math.abs(destination.location.y)
 
 console.log('Part 1', manhattanDistance)

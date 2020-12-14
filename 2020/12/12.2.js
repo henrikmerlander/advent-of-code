@@ -3,40 +3,7 @@ const input = require('fs')
   .trim()
   .split('\n')
 
-const turn = (waypoint, location, direction, degrees) => {
-  const dx = waypoint.x - location.x
-  const dy = waypoint.y - location.y
-
-  const steps = degrees / 90
-
-  const xs = direction === 'R'
-    ? [dx, dy, -dx, -dy]
-    : [dx, -dy, -dx, dy]
-  const ys = direction === 'R'
-    ? [dy, -dx, -dy, dx]
-    : [dy, dx, -dy, -dx]
-
-  const wx = location.x + xs[steps % xs.length]
-  const wy = location.y + ys[steps % ys.length]
-
-  return { x: wx, y: wy }
-}
-
-const forward = (location, waypoint, value) => {
-  const dx = waypoint.x - location.x
-  const dy = waypoint.y - location.y
-
-  const lx = location.x + dx * value
-  const ly = location.y + dy * value
-
-  const wx = lx + dx
-  const wy = ly + dy
-
-  return {
-    location: { x: lx, y: ly },
-    waypoint: { x: wx, y: wy }
-  }
-}
+const origo = { x: 0, y: 0 }
 
 const travel = (instructions, location, waypoint) =>
   instructions
@@ -60,23 +27,28 @@ const travel = (instructions, location, waypoint) =>
           waypoint.x -= value
           break
         case 'L':
-          waypoint = turn(waypoint, location, 'L', value)
-          break
         case 'R':
-          waypoint = turn(waypoint, location, 'R', value)
+          for (let i = 0; i < value / 90; i++) {
+            const wx = waypoint.x
+            const wy = waypoint.y
+            waypoint.x = action === 'R' ? wy : -wy
+            waypoint.y = action === 'R' ? -wx : wx
+          }
           break
         case 'F':
-          ({ location, waypoint } = forward(location, waypoint, value))
+          location.x += waypoint.x * value
+          location.y += waypoint.y * value
           break
       }
+
       return { location, waypoint }
     }, { location, waypoint })
 
 const instructions = input
-
-const startingPoint = { x: 0, y: 0 }
-const waypoint = { x: 10, y: 1 }
+const startingPoint = origo
+const waypoint = { x: startingPoint.x + 10, y: startingPoint.y + 1 }
 const destination = travel(instructions, startingPoint, waypoint)
+
 const manhattanDistance = Math.abs(destination.location.x) + Math.abs(destination.location.y)
 
 console.log('Part 2', manhattanDistance)
