@@ -29,10 +29,9 @@ const travel = (instructions, location, waypoint) =>
         case 'L':
         case 'R':
           for (let i = 0; i < value / 90; i++) {
-            const wx = waypoint.x
-            const wy = waypoint.y
-            waypoint.x = action === 'R' ? wy : -wy
-            waypoint.y = action === 'R' ? -wx : wx
+            [waypoint.x, waypoint.y] = action === 'R'
+              ? [waypoint.y, -waypoint.x]
+              : [-waypoint.y, waypoint.x]
           }
           break
         case 'F':
