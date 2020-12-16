@@ -32,7 +32,7 @@ let possibleColumns = rules.map(rule =>
       .every(value => passesRule(value, rule)))
 )
 
-const orderedColumns = Array(rules.length)
+const orderedColumns = []
 
 while (possibleColumns.flat().length) {
   const singleIndex = possibleColumns.findIndex(v => v.length === 1)
@@ -43,7 +43,7 @@ while (possibleColumns.flat().length) {
 }
 
 const multiplied = orderedColumns.reduce((acc, curr, currIndex) =>
-  curr.includes('departure')
+  curr.startsWith('departure')
     ? acc *= myTicket[currIndex]
     : acc
   , 1)
