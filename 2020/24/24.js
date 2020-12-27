@@ -17,7 +17,7 @@ const list = input
       }
     }))
 
-const floor = list.reduce((floor, instructions) => {
+let floor = list.reduce((floor, instructions) => {
   const tile = instructions.reduce((tile, instruction) => ({
     x: tile.x + instruction.x,
     y: tile.y + instruction.y,
@@ -33,3 +33,40 @@ const floor = list.reduce((floor, instructions) => {
 const black = floor => Array.from(floor.values()).filter(Boolean).length
 
 console.log('Part 1', black(floor))
+
+const findAdjacent = ({ x, y, z }) => ([
+  { x, y: y + 1, z: z - 1 },
+  { x, y: y - 1, z: z + 1 },
+  { x: x + 1, y, z: z - 1 },
+  { x: x - 1, y, z: z + 1 },
+  { x: x + 1, y: y - 1, z },
+  { x: x - 1, y: y + 1, z },
+])
+
+const pad = floor => Array.from(floor.keys())
+  .forEach(tile => findAdjacent(JSON.parse(tile))
+    .map(adjacent => JSON.stringify(adjacent))
+    .filter(adjacent => !floor.has(adjacent))
+    .forEach(adjacent => floor.set(adjacent, false)))
+
+const apply = floor => {
+  const previousFloor = new Map(floor)
+  return Array.from(floor.entries()).forEach(([tile, isBlack]) => {
+    const adjacentBlack = findAdjacent(JSON.parse(tile))
+      .map(adjacent => previousFloor.get(JSON.stringify(adjacent)))
+      .filter(Boolean)
+      .length
+
+    if (isBlack && (adjacentBlack === 0 || adjacentBlack > 2))
+      floor.set(tile, false)
+    else if (!isBlack && adjacentBlack === 2)
+      floor.set(tile, true)
+  })
+}
+
+for (let day = 1; day <= 100; day++) {
+  pad(floor)
+  apply(floor)
+}
+
+console.log('Part 2', black(floor))
