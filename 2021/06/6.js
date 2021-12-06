@@ -22,7 +22,7 @@ const simulate = (fish, days) => {
       }
     }
 
-    nextFish.forEach((next, i) => (fish[i] = next))
+    fish = nextFish
   }
 
   return fish.reduce((acc, curr) => acc + curr)
