@@ -3,7 +3,7 @@ const input = require('fs')
 
 const elves = input
   .split('\n\n')
-  .map(x => x.split('\n').map(x => parseInt(x)))
+  .map(x => x.split('\n').map(Number))
   .map(x => x.reduce((acc, curr) => acc + curr))
 
 const most = Math.max(...elves)
