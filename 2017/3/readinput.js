@@ -1,4 +1,1 @@
-module.exports = require('fs')
-    .readFileSync('input.txt')
-    .toString()
-    .trim()
+module.exports = require('fs').readFileSync('input.txt').toString().trim();
